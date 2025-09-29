@@ -11,7 +11,7 @@ app.register(cors, {
   origin: '*', // Em produção, o ideal é restringir para o domínio do seu app na Vercel
 })
 
-app.register(planRoutes, { prefix: '/api' })
+app.register(planRoutes)
 
 // Exporta o app para a Vercel
 export default app

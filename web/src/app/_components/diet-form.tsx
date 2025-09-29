@@ -18,7 +18,7 @@ const dietSchema = z.object({
   altura_cm: z.number().positive(),
   peso_kg: z.number().positive(),
   sexo: z.enum(["masculino", "feminino"], {error: "Selecione o sexo"}),
-  nivel_atitivade: z.enum(["sedentario" , "2x_semana", "4x_semana"], {error: "Selecione o nível de atividade" }),
+  nivel_atividade: z.enum(["sedentario" , "2x_semana", "4x_semana"], {error: "Selecione o nível de atividade" }),
   objetivo: z.enum(["perda_de_peso", "hipertrofia", "manter_massa_muscular"],{ error: "Selecione o objetivo"}),
 
 })
@@ -39,7 +39,7 @@ export function DietForm({ onSubmit }: DietFormProps) {
       altura_cm: undefined,
       peso_kg: undefined,
       sexo: undefined,
-      nivel_atitivade: undefined,
+      nivel_atividade: undefined,
       objetivo: undefined,  
     }
   })
@@ -187,7 +187,7 @@ export function DietForm({ onSubmit }: DietFormProps) {
 
                   <FormField
                     control={form.control}
-                    name="nivel_atitivade"
+                    name="nivel_atividade"
                     render={({ field}) => (
                       <FormItem>
                         <FormLabel>Nível de atividade</FormLabel>          

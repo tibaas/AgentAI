@@ -1,8 +1,14 @@
 import fastify from 'fastify'
 import { planRoutes } from './routes/plan'
+import cors from '@fastify/cors'
 
 export const app = fastify({
   logger: true,
+})
+
+// Registra o CORS para permitir requisições do frontend
+app.register(cors, {
+  origin: '*', // Em produção, o ideal é restringir para o domínio do seu app na Vercel
 })
 
 app.register(planRoutes, { prefix: '/api' })

@@ -6,7 +6,8 @@ import { generateDietPlan } from "../agent";
 
 export async function planRoutes(app: FastifyInstance) {
   app.post("/plan", async (req, res) => {
-    // Corrigindo o typo em "Acess-Control-Allow-Origin"
+    // O ideal é substituir "*" pelo seu domínio da Vercel em produção
+    // Ex: "https://agentia-meu-projeto.vercel.app"
     res.raw.setHeader("Access-Control-Allow-Origin", "*");
     // Definindo o Content-Type para Server-Sent Events (SSE)
     res.raw.setHeader("Content-Type", "text/event-stream");

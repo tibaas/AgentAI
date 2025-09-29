@@ -17,6 +17,10 @@
     {
       "source": "/api/:path*",
       "destination": "backend/src/server.ts"
+    },
+    {
+      "source": "/((?!api/|_next/|static/|favicon.ico|sw.js|manifest.json|images/|img/).*)",
+      "destination": "/web"
     }
   ]
 }

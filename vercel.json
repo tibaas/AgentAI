@@ -7,7 +7,10 @@
     },
     {
       "src": "web/package.json",
-      "use": "@vercel/next"
+      "use": "@vercel/next",
+      "config": {
+        "buildCommand": "next build"
+      }
     }
   ],
   "rewrites": [

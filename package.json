@@ -1,0 +1,7 @@
+{
+  "name": "agentia",
+  "private": true,
+  "overrides": {
+    "zod": "^4.1.11"
+  }
+}

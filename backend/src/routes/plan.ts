@@ -1,7 +1,7 @@
 import type { FastifyInstance } from "fastify"; 
 import { DietPlanRequestSchema } from "../types";
 import { generateDietPlan } from "../agent";
-import { streamToResponse } from "ai";
+import { OpenAIStream, StreamingTextResponse } from "ai";
 
 export async function planRoutes(app: FastifyInstance) {
   app.post("/plan", async (req, res) => {
@@ -16,16 +16,14 @@ export async function planRoutes(app: FastifyInstance) {
 
     try {
       // 1. Gera o stream da OpenAI
-      const stream = generateDietPlan(parse.data);
+      const openaiStream = generateDietPlan(parse.data);
 
-      // 2. Usa o helper `streamToResponse` para enviar a resposta
-      //    Isso é compatível com a Vercel e lida com os headers automaticamente.
-      streamToResponse(stream, res.raw, {
-        headers: {
-          // Permite que o frontend na Vercel acesse a API
-          'Access-Control-Allow-Origin': '*',
-        }
-      });
+      // 2. Converte para um formato compatível com a Vercel AI SDK
+      const stream = OpenAIStream(openaiStream);
+
+      // 3. Cria uma resposta de streaming e a envia usando o Fastify
+      const streamingResponse = new StreamingTextResponse(stream);
+      return res.raw.end(streamingResponse.body);
     } catch (err: any) {
       req.log.error(err);
       return res.status(500).send({ error: "Internal Server Error" });

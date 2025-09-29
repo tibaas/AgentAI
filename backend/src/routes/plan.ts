@@ -1,7 +1,9 @@
 import type { FastifyInstance } from "fastify"; 
 import { DietPlanRequestSchema } from "../types";
-import { generateDietPlan } from "../agent";
-import { OpenAIStream, StreamingTextResponse } from "ai";
+import { openai } from "../agent";
+import { streamText } from "ai";
+import { buildDocsSystemPropmt, buildStystemPrompt, buildUserPrompt } from "../prompt";
+import fs from "fs";
 
 export async function planRoutes(app: FastifyInstance) {
   app.post("/plan", async (req, res) => {
@@ -15,15 +17,21 @@ export async function planRoutes(app: FastifyInstance) {
     }
 
     try {
-      // 1. Gera o stream da OpenAI
-      const openaiStream = generateDietPlan(parse.data);
+      const diretrizes = fs.readFileSync("knowledge/diretrizes.md", "utf-8")
 
-      // 2. Converte para um formato compatível com a Vercel AI SDK
-      const stream = OpenAIStream(openaiStream);
+      // 1. Chama streamText com o modelo e as mensagens
+      const result = await streamText({
+        model: openai.chat("gpt-4o-mini"),
+        messages: [
+          { role: "system", content: buildStystemPrompt() },
+          { role: "user", content: buildUserPrompt(parse.data) },
+          { role: "system", content: buildDocsSystemPropmt(diretrizes) }
+        ],
+        temperature: 0.6,
+      });
 
-      // 3. Cria uma resposta de streaming e a envia usando o Fastify
-      const streamingResponse = new StreamingTextResponse(stream);
-      return res.raw.end(streamingResponse.body);
+      // 2. Envia o stream de texto diretamente, pois o Fastify v5 suporta Web Streams nativamente.
+      return res.send(result.textStream);
     } catch (err: any) {
       req.log.error(err);
       return res.status(500).send({ error: "Internal Server Error" });

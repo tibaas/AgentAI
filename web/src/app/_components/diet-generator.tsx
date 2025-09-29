@@ -48,18 +48,8 @@ export function DietGenerator({data}: {data: DietData}) {
         if (done) break;
 
         const chunk = decoder.decode(value)
-        // Processa as linhas do evento SSE
-        const lines = chunk.split('\n').filter(line => line.trim() !== '');
-        for (const line of lines) {
-          if (line.startsWith('data: ')) {
-            const jsonString = line.substring(6);
-            const data = JSON.parse(jsonString);
-            // Assumindo que o backend envia { content: "..." }
-            setOutput(prev => prev + (data.content || ''));
-          }
-        }
-
-      } 
+        setOutput(prev => prev + chunk)
+      }
 
       
     } catch(err: any) {

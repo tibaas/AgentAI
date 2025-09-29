@@ -1,12 +1,13 @@
-import type { FastifyInstance } from "fastify"; 
+import type { FastifyInstance, FastifyReply } from "fastify";
 import { DietPlanRequestSchema } from "../types";
 import { openai } from "../agent";
 import { streamText } from "ai";
 import { buildDocsSystemPropmt, buildStystemPrompt, buildUserPrompt } from "../prompt";
-import fs from "fs";
+import { promises as fs } from "fs";
+import path from "path";
 
 export async function planRoutes(app: FastifyInstance) {
-  app.post("/plan", async (req, res) => {
+  app.post("/plan", async (req, res: FastifyReply) => {
     const parse = DietPlanRequestSchema.safeParse(req.body);
 
     if (!parse.success) {
@@ -17,7 +18,9 @@ export async function planRoutes(app: FastifyInstance) {
     }
 
     try {
-      const diretrizes = fs.readFileSync("knowledge/diretrizes.md", "utf-8")
+      // Usando path.resolve para um caminho mais robusto
+      const diretrizesPath = path.resolve("knowledge/diretrizes.md");
+      const diretrizes = await fs.readFile(diretrizesPath, "utf-8");
 
       // 1. Chama streamText com o modelo e as mensagens
       const result = await streamText({
@@ -30,10 +33,17 @@ export async function planRoutes(app: FastifyInstance) {
         temperature: 0.6,
       });
 
-      // 2. Envia o stream de texto diretamente, pois o Fastify v5 suporta Web Streams nativamente.
+      // 2. Define o header e envia a stream de texto diretamente.
+      // O Fastify gerenciará a stream para você.
+      res.header('Content-Type', 'text/plain; charset=utf-8');
       return res.send(result.textStream);
+
     } catch (err: any) {
-      req.log.error(err);
+      req.log.error(err, "Error generating diet plan");
+      // Verifica se o erro é de arquivo não encontrado para uma mensagem mais específica
+      if (err.code === 'ENOENT') {
+        return res.status(500).send({ error: "Internal Server Error", message: "Knowledge file not found." });
+      }
       return res.status(500).send({ error: "Internal Server Error" });
     }
   });

@@ -1,7 +1,7 @@
 import fastify from 'fastify'
 import { planRoutes } from './routes/plan'
 
-const app = fastify({
+export const app = fastify({
   logger: true,
 })
 
@@ -43,9 +43,3 @@ export default app
 //     app.log.error(err);
 //     process.exit(1);
 //   })
-
-
-
-
-
-

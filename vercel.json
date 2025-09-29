@@ -17,6 +17,10 @@
     {
       "source": "/api/:path*",
       "destination": "backend/src/server.ts"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/web"
     }
   ]
 }

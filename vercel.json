@@ -7,20 +7,17 @@
     },
     {
       "src": "web/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "build"
-      }
+      "use": "@vercel/next"
     }
   ],
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "/backend/src/server.ts"
+      "destination": "backend/src/server.ts"
     },
     {
       "source": "/:path*",
-      "destination": "/index.html"
+      "destination": "/web/:path*"
     }
   ]
 }

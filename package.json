@@ -1,7 +1,11 @@
 {
   "name": "agentia",
   "private": true,
-  "overrides": {
-    "zod": "^4.1.11"
+  "workspaces": [
+    "web",
+    "backend"
+  ],
+  "engines": {
+    "npm": ">=8.3.0"
   }
 }

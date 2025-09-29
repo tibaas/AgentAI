@@ -19,8 +19,8 @@
       "destination": "backend/src/server.ts"
     },
     {
-      "source": "/((?!api/|_next/|static/|favicon.ico|sw.js|manifest.json|images/|img/).*)",
-      "destination": "/web"
+      "source": "/:path((?!api/).*)",
+      "destination": "/web/:path"
     }
   ]
 }

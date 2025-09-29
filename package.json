@@ -9,6 +9,7 @@
     "npm": ">=8.3.0"
   },
   "overrides": {
-    "zod": "^3.23.8"
+    "zod": "^3.23.8",
+    "lightningcss-linux-x64-gnu": "1.30.1"
   }
 }

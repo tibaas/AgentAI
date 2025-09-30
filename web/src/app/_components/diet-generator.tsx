@@ -21,8 +21,13 @@ export function DietGenerator({data}: {data: DietData}) {
     setOutput("")
     setIsStreaming(true)  
     
+    // Define a URL da API baseada no ambiente (desenvolvimento vs. produção)
+    const apiUrl = process.env.NODE_ENV === 'production'
+      ? '/plan' // Em produção (Vercel), usa um caminho relativo
+      : 'http://localhost:3333/plan'; // Em desenvolvimento, usa o localhost
+
     try {
-      const response = await fetch("http://localhost:3333/plan", {
+      const response = await fetch(apiUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

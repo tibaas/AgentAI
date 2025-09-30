@@ -11,8 +11,8 @@ const allowedOrigin = process.env.NODE_ENV === 'production'
   ? process.env.FRONTEND_URL // Ex: https://meu-app.vercel.app
   : '*';
 // Registra o CORS para permitir requisições do frontend
-app.register(cors as any, {
-  origin: allowedOrigin,
+app.register(cors, {
+  origin: allowedOrigin as string,
 })
 
 app.register(planRoutes)

@@ -6,9 +6,13 @@ export const app = fastify({
   logger: true,
 })
 
+// Define a origem permitida. Em produção, usa a variável de ambiente, senão, permite tudo.
+const allowedOrigin = process.env.NODE_ENV === 'production'
+  ? process.env.FRONTEND_URL // Ex: https://meu-app.vercel.app
+  : '*';
 // Registra o CORS para permitir requisições do frontend
-app.register(cors, {
-  origin: '*', // Em produção, o ideal é restringir para o domínio do seu app na Vercel
+app.register(cors as any, {
+  origin: allowedOrigin,
 })
 
 app.register(planRoutes)
